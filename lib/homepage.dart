@@ -1,7 +1,11 @@
+import 'package:cgpa_calculator/providers/entries.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+
+import 'models/entry.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -19,20 +23,11 @@ class _HomePageState extends State<HomePage> {
 
   List<String> gradeValue = [];
   List<String> creditValue = [];
+  List<Entry> _entryList = [];
+  int count = 0;
 
   final List<String> grades = ["S", "A", "B", "C", "D", "E", "F"];
   final List<String> credits = ["1", "2", "3", "4"];
-
-  @override
-  void initState() {
-    for (int i = 0; i < 15; i++) {
-      gradeValue.add("S");
-    }
-    for (int i = 0; i < 15; i++) {
-      creditValue.add("1");
-    }
-    super.initState();
-  }
 
   void onGradeSelect(String value, int index) {
     setState(() {
@@ -48,6 +43,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final entries = Provider.of<Entries>(context);
+    for (var i in entries.items.values) {
+      _entryList.add(i);
+      gradeValue.add(i.grade);
+      creditValue.add(i.credit.toString());
+    }
     return Scaffold(
       backgroundColor: NeumorphicTheme.baseColor(context),
       body: Center(
@@ -93,6 +94,11 @@ class _HomePageState extends State<HomePage> {
                           ),
                           onPressed: () {
                             HapticFeedback.lightImpact();
+                            entries.addItem(count + 1, 'S', 3);
+                            print("Count is $count");
+                            setState(() {
+                              count += 1;
+                            });
                           }),
                     )
                   ],
@@ -103,22 +109,11 @@ class _HomePageState extends State<HomePage> {
                 width: double.infinity,
                 margin: EdgeInsets.symmetric(horizontal: 45),
                 //  color: Colors.red,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                      entry(1),
-                    ],
-                  ),
+                child: ListView.builder(
+                  itemCount: entries.itemCount,
+                  itemBuilder: (context, index) {
+                    return entry(_entryList[index].id);
+                  },
                 ),
               )
             ],
@@ -138,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,
                           fontSize: 16)),
-                  onPressed: () {},
+                  onPressed: () => entries.calculate,
                   style: NeumorphicStyle(
                     intensity: 40,
                     depth: 50,
@@ -152,7 +147,10 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                           color: Colors.red,
                           fontSize: 16)),
-                  onPressed: () {},
+                  onPressed: () {
+                    entries.reset();
+                    count = 0;
+                  },
                   style: NeumorphicStyle(
                       intensity: 20, depth: 50, shape: NeumorphicShape.concave),
                 )
@@ -168,23 +166,22 @@ class _HomePageState extends State<HomePage> {
               //  title: GaugeTitle(text: "CGPA"),
               axes: <RadialAxis>[
                 RadialAxis(
-                  showTicks: false,
-                  showLabels: false,
+                    showTicks: false,
+                    showLabels: false,
                     minimum: 0,
                     maximum: 10,
                     interval: 1,
                     radiusFactor: 1.25,
                     pointers: <GaugePointer>[
                       RangePointer(
-                        enableAnimation: true,
-                        color: Colors.indigo,
-                        value: 7.694
-                      )
+                          enableAnimation: true,
+                          color: Colors.indigo,
+                          value: entries.calculate)
                     ],
                     annotations: <GaugeAnnotation>[
                       GaugeAnnotation(
                           widget: Text(
-                        "7.694",
+                        entries.calculate.toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 17,

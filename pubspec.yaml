@@ -29,6 +29,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   flutter_neumorphic: ^3.0.2
   syncfusion_flutter_gauges: ^18.2.57
+  provider: ^4.3.2+2
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,17 @@
+import 'package:cgpa_calculator/providers/entries.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:provider/provider.dart';
 
 import 'homepage.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+    create: (context) => Entries(),
+    child: MyApp(),
+  )
+  );
 }
 
 class MyApp extends StatelessWidget {

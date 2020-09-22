@@ -1,7 +1,7 @@
 class Entry {
   int id;
   String grade;
-  String credit;
+  int credit;
 
   Entry({this.id,this.grade,this.credit});
 }
