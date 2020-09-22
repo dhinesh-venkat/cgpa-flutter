@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   List<String> gradeValue = [];
   List<String> creditValue = [];
   List<Entry> _entryList = [];
-  int count = 0;
+  int plus = 0;
 
   final List<String> grades = ["S", "A", "B", "C", "D", "E", "F"];
   final List<String> credits = ["1", "2", "3", "4"];
@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final entries = Provider.of<Entries>(context);
+    _entryList = [];
     for (var i in entries.items.values) {
       _entryList.add(i);
       gradeValue.add(i.grade);
@@ -93,12 +94,9 @@ class _HomePageState extends State<HomePage> {
                             size: 28,
                           ),
                           onPressed: () {
+                            plus += 1;
                             HapticFeedback.lightImpact();
-                            entries.addItem(count + 1, 'S', 3);
-                            print("Count is $count");
-                            setState(() {
-                              count += 1;
-                            });
+                            entries.addItem(plus, 'S', 3);
                           }),
                     )
                   ],
@@ -149,7 +147,6 @@ class _HomePageState extends State<HomePage> {
                           fontSize: 16)),
                   onPressed: () {
                     entries.reset();
-                    count = 0;
                   },
                   style: NeumorphicStyle(
                       intensity: 20, depth: 50, shape: NeumorphicShape.concave),
