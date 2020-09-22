@@ -18,7 +18,8 @@ class _HomePageState extends State<HomePage> {
   TextStyle headerStyle = TextStyle(color: Colors.blueGrey, fontSize: 16);
   TextStyle dropDownStyle = TextStyle(
     color: Colors.black,
-    fontSize: 12,
+    fontSize: 13,
+    fontWeight: FontWeight.bold
   );
 
   List<String> gradeValue = [];
@@ -30,12 +31,14 @@ class _HomePageState extends State<HomePage> {
   final List<String> credits = ["1", "2", "3", "4"];
 
   void onGradeSelect(String value, int index) {
+    Provider.of<Entries>(context,listen: false).updateItem(index+1, value, int.parse(creditValue[index]));
     setState(() {
       gradeValue[index] = value;
     });
   }
 
   void onCreditSelect(String value, int index) {
+        Provider.of<Entries>(context,listen: false).updateItem(index+1, gradeValue[index], int.parse(value));
     setState(() {
       creditValue[index] = value;
     });
@@ -147,6 +150,7 @@ class _HomePageState extends State<HomePage> {
                           fontSize: 16)),
                   onPressed: () {
                     entries.reset();
+                    plus = 0;
                   },
                   style: NeumorphicStyle(
                       intensity: 20, depth: 50, shape: NeumorphicShape.concave),
@@ -230,7 +234,10 @@ class _HomePageState extends State<HomePage> {
                   style: dropDownStyle,
                   items: grades.map((item) {
                     return DropdownMenuItem<String>(
-                      child: Text(item),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left:10.0),
+                        child: Text(item),
+                      ),
                       value: item,
                     );
                   }).toList(),
@@ -254,7 +261,10 @@ class _HomePageState extends State<HomePage> {
                   style: dropDownStyle,
                   items: credits.map((item) {
                     return DropdownMenuItem<String>(
-                      child: Text(item),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left:10.0),
+                        child: Text(item),
+                      ),
                       value: item,
                     );
                   }).toList(),

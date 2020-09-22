@@ -4,7 +4,6 @@ import '../models/entry.dart';
 class Entries with ChangeNotifier {
   Map<String, Entry> _items = {};
 
-
   Map<String, int> gradePoint = {
     'S': 10,
     'A': 9,
@@ -30,15 +29,20 @@ class Entries with ChangeNotifier {
       result += gradePoint[value.grade] * value.credit;
       totalCredit += value.credit;
     });
+    print(result);
+    print(totalCredit);
     return num.parse((result / totalCredit).toStringAsFixed(3));
   }
 
-  void addItem(int id,String grade, int credit) {
-    _items.addAll({
-      DateTime.now().toString():
-          Entry(id: id,grade: grade, credit: credit)
-    });
+  void addItem(int id, String grade, int credit) {
+    _items.addAll({id.toString(): Entry(id: id, grade: grade, credit: credit)});
     notifyListeners();
+  }
+
+  void updateItem(int id, String grade, int credit) {
+    _items.update(id.toString(), (value) => Entry(id: id,grade: grade,credit: credit));
+    notifyListeners();
+
   }
 
   void reset() {
